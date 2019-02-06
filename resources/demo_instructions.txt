@@ -1,0 +1,100 @@
+_Legend_
+	$ denotes console commands 
+	> denotes web3 shell commands (after $ geth attach )
+	# denotes java application commands
+
+Preliminaries:
+	Install geth: https://geth.ethereum.org/downloads/
+	Have [NxParser](https://github.com/nxparser/nxparser) version 3.0.0-SNAPSHOT installed. If not, quickly:
+		$ cd /tmp/
+		$ git clone https://github.com/nxparser/nxparser
+		$ cd nxparser
+		$ mvn clean install -Dmaven.test.skip=true
+
+	
+Starting in the code directory of the project: .../LinkedDataLogisticsClient$
+An example blockchain has already been initialised, using the genesis file in folder ./ethereum. If anything unexpected happens to the state of the blockchain, simply download this folder again and replace your local copy. Everything will be set back to the inital state.
+Furthermore, an example instance of a LDHashNotary Smart Contract has been deployed. It is available at 0x0cc602df7db83fa106e2978a4e91dd0d097e48b8.
+
+Start ethereum node: 
+	$ geth --port 3000 --networkid 58343 --nodiscover --datadir=ethereum --maxpeers=0  --rpc --rpcport 8543 --rpcapi "eth,net,web3,personal,miner"
+ 														
+Access node in new console window and open a web3 shell via: 
+	$ geth attach http://localhost:8543
+	
+Whenever you want to change the state of the blockchain, add a new product or a hash, you will need to activate the miner first. It is not recommended, although possible, to let the node mine all the time. 
+
+To start mining simply: (in the web3 shell)
+	> miner.start(1)
+	
+To stop mining simply:
+	> miner.stop()
+	
+Remember: 
+	Mining will produce new blocks very fast in this private blockchain. So, when you are not trying to change the state of the blockchain, do not mine. It adds no value! Only the database grows with empty blocks.
+	
+Since it is a Demo App: Run it directly from your IDE. The following paths are provided assuming this. Also, handy commands and paths are given as comments in App.java!
+However, you may also build & run it with Maven. In this case, adjust the following paths accordingly!
+
+The main menu will ask you to tell it what you want. To see all commands enter: help
+
+In the Smart Contract, there is no product registered, yet. Therefore we will need to register our demo good, whose birth certificate is available at http://www.student.kit.edu/~uvdsl/data/birthCert.ttl . (Don't include whitespaces!)
+	# newProduct
+
+After providing the URI of the birth certificate, you will be asked to provide the next owner's address (his/her ethereum wallet address). In our case e.g. the address of the ldlWallet.json:
+	# 0xe495c94b8776a1550e79923f1e7f4aa21013fd39
+
+Provide your credentials, analogous if using the dld-Account!
+WALLET HOME: ethereum/keystore/ldlWallet.json
+WALLET PASS: ldl
+
+Remember: 
+	You must have the ethereum node as well as the miner running for the registration of the product to work!
+	
+Further explanation: 
+	After providing your credentials, the wallet file is accessed to sign the transactions to come.
+	However, the birth certificate's URI is accessed and the linked data content is retrieved. It is then skolemised and hashed, resulting in the syntactic hash you can see in your console.
+	Then, the Smart Contract's address, at which the product is to be registered, is looked up.
+	The Smart Contract is loaded and the registration of the product by its birth certificate's hash is issued. This transaction is carried out by using the credentials provided earlier.
+	It takes a few seconds for the miner to include the registration transaction in a block.
+	The number provided in the end of the procedure shows the gas used for this transaction. If the gas used equals 6721975 (the gas limit), the transaction did not complete. There was an error then.
+	In case the number is below 6721975, everything worked out fine! Congratulations! You registered your first product!
+	
+Back in the main menu, we would like to transfer the ownership of the physical good now to the next entity in the supply chain. For this, we need to conduct a linkedTransfer:
+	# linkedTransfer
+	
+First the linked pedigree will be checked for validity. For that, we provide the last linked pedigree part known to us, which is the birth certificate:
+	# http://www.student.kit.edu/~uvdsl/data/birthCert.ttl
+	
+In case you had to restart the App, you will be asked for your Wallet again. 
+Remember:
+	Only the current owner of the product may conduct a linkedTransfer, so be sure to use the credentials you used to register the new product!
+	
+In the console you should see now, that the hash of the birth certificate is checked and true. Therefore, we can continue by pressing: y
+Now we must provide the new transfer document's URI. In that document all the relevant transfer data should be stated using the linked pedigree ontology. Furthermore it is very important to reference the previous part of the linked pedigree. In our case, the demo document references the birth certificate as previous part.
+	# http://www.student.kit.edu/~uvdsl/data/linkedTransfer1.ttl
+
+Because we want to transfer the physical ownership of the good, we have to provide again a ethereum wallet address of the next owner, in our case the dldWallet (Wallet of the next owner):
+	# 0x401cbc58de13cdc43a3da1c557d0583f43deaa1d
+	
+Remember: 
+	You must have the ethereum node as well as the miner running for the registration of the product to work!
+
+Further explanation: 
+	The provided URI of the new transfer document is accessed and the linked data content is retrieved, skolemised and hashed.
+	The syntactic hash is then stored in the blockchain via the Smart Contract.
+	The digital ownership of the product is transferred to the next owner. Now, we can't store a hash anymore (at least from the ldlWallet-Account). New owner is the dldWallet-Account.
+	A message will inform you about the completion of the transaction.
+	In case of a successful transaction: Congratulations! 
+	You may conduct a second linked transfer, if you want, using linkedTransfer1.ttl as last known linked pedigree part and using linkedTransfer2.ttl as the new transfer document.
+	
+Remember:
+	Only the current owner of the product may conduct a linked transfer! 
+	# switchWallets 
+	
+Feel free to play around! Maybe check out the linked pedigree?
+	# linkedPedigree
+	# checkPedigree
+
+Found a Bug?
+Yes! If you play around a little, you will find, that the implementation of the Smart Contract is not really as precise as declared in the paper. To ease the pain of strict business rules and facilitate the demonstration, I decided to keep the smart contract that way, knowing very well about its flaws. This code should not be deployed in a real business environment, rather, it can be used as a template to develop a robust and to your use case applicable smart contract.

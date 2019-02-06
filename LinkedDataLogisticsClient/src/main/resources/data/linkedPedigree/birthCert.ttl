@@ -1,0 +1,45 @@
+# This Terse RDF Triple Language document was created by uvdsl@student.kit.edu.
+@prefix : <#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dctypes: <http://purl.org/dc/dcmitype/> .
+@prefix lpo: <http://www.student.kit.edu/~uvdsl/ontologies/linkedPedigree.ttl#> .
+@prefix data: <http://www.student.kit.edu/~uvdsl/data/> .
+
+: a dctypes:Dataset ;
+dct:title "birthCert"^^rdf:langString;
+dct:description "Birth certificate of a product and first part of its linked pedigree."^^rdf:langString ;
+dct:subject :originProduct ;
+dct:publisher data:originFirm .
+
+: a lpo:BirthCertificate , lpo:TransferDocument  .
+
+:originProduct
+    a
+        lpo:product ;
+    lpo:label
+        "originProduktName"@de ,
+        "originProductName"@en ;
+    lpo:created # range -> lpo:Creation subpropertyOf lpo:Transfer
+        [ lpo:creationDocument : ;
+          lpo:createdBy #subproperty of transferredOwnershipTo
+              data:originFirm ;
+          lpo:time
+              "2018-12-01T09:00:00"^^xsd:dateTime ;
+          lpo:place
+              [ lpo:latitude 49.015000 ;
+                lpo:longitude 8.419700 ;
+                lpo:elevation 116.00 ] ] ;
+    lpo:transfer
+        [ lpo:transferDocument : ;
+          lpo:transferredOwnershipFrom data:originFirm ;
+          lpo:transferredOwnershipTo data:firm_1 ;
+          lpo:time "2018-12-06T19:30:12"^^xsd:dateTime;
+          lpo:place
+            [ lpo:latitude 49.009200 ;
+              lpo:longitude 8.409775 ;
+              lpo:elevation 120.00 ] ] ;
+    lpo:verifiedBy
+        "0x0cc602df7db83fa106e2978a4e91dd0d097e48b8" .
