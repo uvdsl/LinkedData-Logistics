@@ -1,5 +1,5 @@
 # LinkedData-Logistics
-This project is concerned with the usage of Linked Data in the logistics domain. As ensuring integrity of Linked Data is inherently difficult, we propose a scheme to provide proof in a trustless manner by using *Smart Contracts* on the Ethereum platform. For a quick overview, see the information provided [below](https://github.com/uvdsl/LinkedData-Logistics#overview-problem--solution-approach) or read [our paper](https://github.com/uvdsl/LinkedData-Logistics/blob/master/resources/literature/paper_final.pdf)!<p>
+This project is concerned with the usage of Linked Data in the logistics domain. As ensuring integrity of Linked Data is inherently difficult, we propose a scheme to provide proof in a trustless manner by using *Smart Contracts* on the Ethereum platform. For a quick overview, see the information provided [below](https://github.com/uvdsl/LinkedData-Logistics#overview-problem--solution-approach) or read [our paper](https://github.com/uvdsl/LinkedData-Logistics/blob/master/resources/literature/Braun%2C%20Merker%2C%20Leuthe%20(2019)%2C%20Data%20sharing%20in%20the%20logistics%20domain.pdf)!<p>
         
 However, the implementation is more of a [demonstration tool](https://github.com/uvdsl/LinkedData-Logistics#demonstration-tool), rather than a at production stage deployable application. For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/resources/demo_instructions.txt).
 
@@ -26,9 +26,9 @@ java -Xmx1024M -jar ./target/LinkedDataLogisticsClient-jar-with-dependencies.jar
 ---
 
 ## Overview: Problem & Solution Approach
-**Problems.** Data sharing is the basis of a well working supply chain. Companies rely on information they receive from their business partners not only to operate efficiently in their daily business, but also when taking important business decisions. In addition, not only businesses but also society, clearly demanding more transparency regarding details on consumer products and their transportation, require a way of recieving and verifying information in a standardised manner.<p>
+**Problems.** Data sharing is the basis of a well working supply chain. Companies rely on information they receive from their business partners not only to operate efficiently in their daily business, but also when taking important business decisions. In addition, not only businesses but also society, clearly demanding more transparency regarding details on consumer products and their transportation, require a way of receiving and verifying information in a standardised manner.<p>
         
-**Solution.** To solve this problem, we propose the use and implementation of a *Linked Pedigree*, a form of a decentralised dataset representing the biography of a product. This *Linked Pedigree* is hashed and its hashes then stored via a *Smart Contract* on a blockchain, to enable for a verification process of that biography data. 
+**Solution.** To solve this problem, we propose the use and implementation of a *Linked Pedigree*, a form of a decentralized dataset representing the biography of a product. This *Linked Pedigree* is hashed and its hashes then stored via a *Smart Contract* on a blockchain, to enable for a verification process of that biography data. 
 The *Linked Pedigree* is structured according to the [LinkedPedigree-Ontology](http://www.student.kit.edu/~uvdsl/ontologies/linkedPedigree.ttl) developed by us.<p>
         
 ## Linked Pedigree
