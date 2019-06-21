@@ -1,3 +1,7 @@
+###################
+### version 0.1 ###
+###################
+
 _Legend_
 	$ denotes console commands 
 	> denotes web3 shell commands (after $ geth attach )
@@ -12,17 +16,21 @@ Preliminaries:
 		$ mvn clean install -Dmaven.test.skip=true
 
 	
-Starting in the code directory of the project: .../LinkedDataLogisticsClient$
-An example blockchain has already been initialised, using the genesis file in folder ./ethereum. If anything unexpected happens to the state of the blockchain, simply download this folder again and replace your local copy. Everything will be set back to the inital state.
-Furthermore, an example instance of a LDHashNotary Smart Contract has been deployed. It is available at 0x0cc602df7db83fa106e2978a4e91dd0d097e48b8.
+Starting in the directory of the project: 
+An example blockchain has already been initialised, using the genesis file in folder ./LinkedDataLogisticsClient/ethereum. If anything unexpected happens to the state of the blockchain, simply delete your local copy and download this folder again. Everything will be set back to the inital state.
+Furthermore, an example instance of a LDHashNotary Smart Contract has been deployed. (see: http://www.student.kit.edu/~uvdsl/data/semantic/blockchainInfo.ttl)
+
+
+
+## GETH
 
 Start ethereum node: 
-	$ geth --port 3000 --networkid 58343 --nodiscover --datadir=ethereum --maxpeers=0  --rpc --rpcport 8543 --rpcapi "eth,net,web3,personal,miner"
+	$ geth --port 3000 --networkid 7331 --nodiscover --datadir=./LinkedDataLogisticsClient/ethereum --rpc --rpcport 8543 --rpcapi "admin,eth,net,web3,personal,miner" --ipcdisable --rpccorsdomain "*""eth,net,web3,personal,miner"
  														
 Access node in new console window and open a web3 shell via: 
 	$ geth attach http://localhost:8543
 	
-Whenever you want to change the state of the blockchain, add a new product or a hash, you will need to activate the miner first. It is not recommended, although possible, to let the node mine all the time. 
+Whenever you want to change the state of the blockchain, add or approve a hash, you will need to activate the miner first. It is not recommended, although possible, to let the node mine all the time. 
 
 To start mining simply: (in the web3 shell)
 	> miner.start(1)
@@ -32,69 +40,159 @@ To stop mining simply:
 	
 Remember: 
 	Mining will produce new blocks very fast in this private blockchain. So, when you are not trying to change the state of the blockchain, do not mine. It adds no value! Only the database grows with empty blocks.
-	
-Since it is a Demo App: Run it directly from your IDE. The following paths are provided assuming this. Also, handy commands and paths are given as comments in App.java!
-However, you may also build & run it with Maven. In this case, adjust the following paths accordingly!
 
-The main menu will ask you to tell it what you want. To see all commands enter: help
 
-In the Smart Contract, there is no product registered, yet. Therefore we will need to register our demo good, whose birth certificate is available at http://www.student.kit.edu/~uvdsl/data/birthCert.ttl . (Don't include whitespaces!)
-	# newProduct
 
-After providing the URI of the birth certificate, you will be asked to provide the next owner's address (his/her ethereum wallet address). In our case e.g. the address of the ldlWallet.json:
-	# 0xe495c94b8776a1550e79923f1e7f4aa21013fd39
+## LD-CHAIN CLIENT
 
-Provide your credentials, analogous if using the dld-Account!
-WALLET HOME: ethereum/keystore/ldlWallet.json
-WALLET PASS: ldl
+	$ mvn package
+	$ java -Xmx1024M -jar ./LinkedDataLogisticsClient/target/LinkedDataLogisticsClient-jar-with-dependencies.jar
+
+The main menu will ask you to tell it what you want. To see all commands enter: 
+	# help
+
+
+### Role: Fisherman
+
+Referencing the example from the paper, we are now the fisher who hands over the caugth fish to the trucker. We will store the hash of the corresponding initial Linked Pedigree part:
+	# store
+	Please enter the URI of the Linked Pedigree part:
+	# http://www.student.kit.edu/~uvdsl/data/semantic/initialPedigree.ttl
+
+After providing the URI of the birth certificate, you will be asked login to your, i.e. the fisher's, ethereum wallet (if not already done):
+	Please enter your WALLET_HOME:
+	# ethereum/keystore/ldlWallet.json
+	Please enter your WALLET_PASS:
+	# ldl
+
+Now provide the next owner's address, i.e. the trucker's ethereum wallet address. In our case, the address of the dldlWallet.json:
+	# 0x401cbc58de13cdc43a3da1c557d0583f43deaa1d
+
+Some hashing logs and query logs appear. The contract is loaded and validated. Then a transaction is issued to store the hash. It is pending until a miner includes the transaction in a block and mines it successfully.
 
 Remember: 
-	You must have the ethereum node as well as the miner running for the registration of the product to work!
+	You must have the ethereum node as well as the miner running!
 	
 Further explanation: 
 	After providing your credentials, the wallet file is accessed to sign the transactions to come.
-	However, the birth certificate's URI is accessed and the linked data content is retrieved. It is then skolemised and hashed, resulting in the syntactic hash you can see in your console.
+	The initial part's URI is accessed and the Linked Data content is retrieved. 
+	The RDF graph is queried for a previous Pedigree part. 
+		If none is found, the URI will be registered as an initial Linked Pedigree part via the Samrt Contract.
+		If one is found, the URI will be appended to an existing Linked Pedigree via the Samrt Contract.
+	The RDF graph is then skolemised and hashed, resulting in the syntactic hash you can see in your console.
 	Then, the Smart Contract's address, at which the product is to be registered, is looked up.
-	The Smart Contract is loaded and the registration of the product by its birth certificate's hash is issued. This transaction is carried out by using the credentials provided earlier.
-	It takes a few seconds for the miner to include the registration transaction in a block.
-	The number provided in the end of the procedure shows the gas used for this transaction. If the gas used equals 6721975 (the gas limit), the transaction did not complete. There was an error then.
-	In case the number is below 6721975, everything worked out fine! Congratulations! You registered your first product!
-	
-Back in the main menu, we would like to transfer the ownership of the physical good now to the next entity in the supply chain. For this, we need to conduct a linkedTransfer:
-	# linkedTransfer
-	
-First the linked pedigree will be checked for validity. For that, we provide the last linked pedigree part known to us, which is the birth certificate:
-	# http://www.student.kit.edu/~uvdsl/data/birthCert.ttl
-	
-In case you had to restart the App, you will be asked for your Wallet again. 
-Remember:
-	Only the current owner of the product may conduct a linkedTransfer, so be sure to use the credentials you used to register the new product!
-	
-In the console you should see now, that the hash of the birth certificate is checked and true. Therefore, we can continue by pressing: y
-Now we must provide the new transfer document's URI. In that document all the relevant transfer data should be stated using the linked pedigree ontology. Furthermore it is very important to reference the previous part of the linked pedigree. In our case, the demo document references the birth certificate as previous part.
-	# http://www.student.kit.edu/~uvdsl/data/linkedTransfer1.ttl
+	The Smart Contract is loaded and the storage of the hash is issued. 
+		This transaction is carried out by using the credentials provided earlier.
+	It takes a few seconds for the miner to include the transaction in a block.
+	The number provided in the end of the procedure shows the gas used for this transaction. 
+		If the gas used equals 6721975 (the gas limit), the transaction did not complete. There was an error then.
+		In case the number is below 6721975, everything worked out fine! 
+	Congratulations:
+		- you stored the initial Linked Pedigree part's hash (with that, you registered your first item), 
+		- you transferred the digital ownership to the next owner, i.e. the trucker!
 
-Because we want to transfer the physical ownership of the good, we have to provide again a ethereum wallet address of the next owner, in our case the dldWallet (Wallet of the next owner):
-	# 0x401cbc58de13cdc43a3da1c557d0583f43deaa1d
+In the role of the fisherman, you can now go ahead and offer the item (the fish) to the trucker.
 	
-Remember: 
-	You must have the ethereum node as well as the miner running for the registration of the product to work!
+
+### Role: Trucker
+ 	If you are still running the CLI client, you are still logged in with the fisher's ethereum wallet.
+	You will not be able to approve the hash. 
+	A transaction issued will result in a error returning 0x00 (not enough gas?).
+	This indicates that you are out of gas OR, in this case, are not allowed to execute the function.
+	Just exit and restart! (Yes, there is also a funcionality to directly switch wallets in the CLI.)
+
+Now taking the role of the trucker, the item (the fish) is offered to you by the fisherman. You have to check the initial Linked Pedigree part published by the fisher, if the information state there, especially on the imminent handover, are in fact correct. If everything is fine, you approve this Linked Pedigree part.
+	# approve
+	Please enter the URI of the Linked Pedigree part:
+	# http://student.kit.edu/~uvdsl/data/semantic/initialPedigree.ttl
+	
+Now logging in with the trucker's ethereum wallet (if not already done):
+	Please enter your WALLET_HOME:
+	# ethereum/keystore/dldWallet.json
+	Please enter your WALLET_PASS:
+	# dld
+
+Again, logs appear and a transaction is issued that is pending until a miner does the job.
+
+
+Remember:
+	You must have the ethereum node as well as the miner running!
+	Only the next owner of an item may approve the Linked Pedigree part, so be sure to use the credentials you used to register the new product!
+	In fact, you have to approve the previous Linked Pedigree part, before you can reference it with your new Linked Pedigree part!
 
 Further explanation: 
-	The provided URI of the new transfer document is accessed and the linked data content is retrieved, skolemised and hashed.
-	The syntactic hash is then stored in the blockchain via the Smart Contract.
-	The digital ownership of the product is transferred to the next owner. Now, we can't store a hash anymore (at least from the ldlWallet-Account). New owner is the dldWallet-Account.
-	A message will inform you about the completion of the transaction.
-	In case of a successful transaction: Congratulations! 
-	You may conduct a second linked transfer, if you want, using linkedTransfer1.ttl as last known linked pedigree part and using linkedTransfer2.ttl as the new transfer document.
-	
-Remember:
-	Only the current owner of the product may conduct a linked transfer! 
-	# switchWallets 
-	
-Feel free to play around! Maybe check out the linked pedigree?
-	# linkedPedigree
+	After providing your credentials, the wallet file is accessed to sign the transactions to come.
+	The initial part's URI is accessed and the Linked Data content is retrieved. 
+	The RDF graph is then skolemised and hashed, resulting in the syntactic hash you can see in your console.
+	Then, the Smart Contract's address, at which the product is to be registered, is looked up.
+	The Smart Contract is loaded.
+	The Smart Contract is consulted in order to retrieve the already stored hash of the input URI.
+	The just generated hash is compared to the hash retrieved from the Smart Contract.
+		If they match, the content has not been tampered with and is infact the content the trucker (you!) reviewed.
+	Then, the transaction of approval is allowed to be issued.
+		It takes a few seconds for the miner to include the transaction in a block.
+	The number provided in the end of the procedure shows the gas used for this transaction. 
+		If the gas used equals 6721975 (the gas limit), the transaction did not complete. There was an error then.
+		In case the number is below 6721975, everything worked out fine! 
+	Congratulations:
+		- you approved the initial Linked Pedigree part!
+
+You as the trucker can now accept the receipt of the item and bring it to the supermarket.
+
+
+### Continue
+
+You can now continue the example:
+	- store the trucker's Linked Pedigree part: http://www.student.kit.edu/~uvdsl/data/semantic/intermediatePedigree.ttl
+	- switch roles to the supermarket, approve it. 
+
+Hints: 
+	You can choose any Ethereum wallet as the next owner (you should have access to it, though).
+	For the demonstration, you can just switch between the wallets listed below.
+
+
+
+### But wait! There is more! - The end-consumers view
+
+You can check a Linked Pedigree:
 	# checkPedigree
+	Please enter the product's last known Linked Pedigree part URI:
+	# http://student.kit.edu/~uvdsl/data/semantic/intermediatePedigree2.ttl
+
+If you want the Linked Pedigree content:
+	# linkedPedigree  
+	Please enter the product's last known Linked Pedigree part URI:
+	# http://student.kit.edu/~uvdsl/data/semantic/intermediatePedigree2.ttl
+	
+You can check on a specific Linked Pedigree part on the Ethereum blockchain:
+	# info
+	Please enter the URI to get info to:
+	# http://student.kit.edu/~uvdsl/data/semantic/initialPedigree.ttl
+	
+This will display informations on the next owner, approval status and previous Linked Pedigree part!
+
+
+
+Feel free to play around! 
+
+
+
+### Known Linked Pedigree parts:
+
+Generic Linked Pedigree:
+http://student.kit.edu/~uvdsl/data/semantic/initialPedigree.ttl
+http://student.kit.edu/~uvdsl/data/semantic/intermediatePedigree.ttl
+http://student.kit.edu/~uvdsl/data/semantic/intermediatePedigree2.ttl
+
+### Known Ethereum Wallets:
+
+		path 		 | pass | 		address
+-------------------------------- |------|-------------------------------------------
+ethereum/keystore/ldlWallet.json | ldl  | 0xe495c94b8776a1550e79923f1e7f4aa21013fd39
+ethereum/keystore/dldWallet.json | dld  | 0x401cbc58de13cdc43a3da1c557d0583f43deaa1d
+
 
 Found a Bug?
-Yes! If you play around a little, you will find, that the implementation of the Smart Contract is not really as precise as declared in the paper. To ease the pain of strict business rules and facilitate the demonstration, I decided to keep the smart contract that way, knowing very well about its flaws. This code should not be deployed in a real business environment, rather, it can be used as a template to develop a robust and to your use case applicable smart contract.
+If you play around a little, you will find, that the implementation of the Smart Contract may not satisfy your needs. This code should not be deployed in a real business environment without review, rather, it can be used as a template to develop a robust and to your use case applicable Smart Contract.
+
+Contact me, if you want discuss anything :)
