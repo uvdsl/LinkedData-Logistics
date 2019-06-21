@@ -37,7 +37,7 @@ A website presenting a walk-through of the ''LD-chain client'', this CLI client 
 ---
 
 ## Overview: Problem & Solution Approach
-**Problems.** 
+**Problem.** 
 Today's supply chain networks face the challenge of delivering goods and services not only efficiently but also transparently to the customer. 
 Transparently provided information is important, e.g. in the food sector, where society demands more transparency regarding details on products and their transportation.
 
@@ -56,11 +56,11 @@ Hence, we ask: Can we combine the verification capabilities of the distributed l
 The implementation of 2 and 4 as well as the unique combination of the single parts are the contributions of this demonstration. 
 Our implementation consists of the following parts:
 
-1. We use Linked Data, \ie RDF accessible using HTTP to store data off-chain in a decentralised fashion. <br>
+1. We use Linked Data, i.e. RDF accessible using HTTP to store data off-chain in a decentralised fashion. <br>
    We build a trail of ownership of an item, its so-called ''Linked Pedigree'', in the form of RDF graphs. <br>
-   The RDF graphs are described using terms from the OntoPedigree ontology [2](https://github.com/uvdsl/LinkedData-Logistics#sources).
+   The RDF graphs are described using terms from the OntoPedigree ontology [[2](https://github.com/uvdsl/LinkedData-Logistics#sources)].
 2. We implement a link-traversal based querying approach for verifying data on a Linked Pedigree off-chain.
-3. We hash the RDF graph using the approach of [1](https://github.com/uvdsl/LinkedData-Logistics#sources) to connect the off-chained data with the distributed ledger.
+3. We hash the RDF graph using the approach of [[1](https://github.com/uvdsl/LinkedData-Logistics#sources)] to connect the off-chained data with the distributed ledger.
 4. We implement a Smart Contract to store RDF graph hashes in a Distributed Ledger based on Ethereum. <br>
    The stored hashes are then used to verify their corresponding Linked Data. 
 
