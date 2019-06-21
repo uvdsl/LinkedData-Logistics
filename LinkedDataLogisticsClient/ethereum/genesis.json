@@ -6,10 +6,10 @@
         "eip158Block": 0,
 		"byzantiumBlock": 0
     },
-    "difficulty": "400",
+    "difficulty": "0x20000",
     "gasLimit": "8000000",
     "alloc": {
-		"e495c94b8776a1550e79923f1e7f4aa21013fd39": { "balance": "50000000000000000000" },
-        "401cbc58de13cdc43a3da1c557d0583f43deaa1d": { "balance": "50000000000000000000" }
+		"0xe495c94b8776a1550e79923f1e7f4aa21013fd39": { "balance": "50000000000000000000" },
+        "0x401cbc58de13cdc43a3da1c557d0583f43deaa1d": { "balance": "50000000000000000000" }
     }
 }

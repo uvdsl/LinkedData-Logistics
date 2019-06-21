@@ -77,18 +77,18 @@ public class Web3jClient {
 	}
 
 	/**
-	 * Load a LDHashNotary-Contract from the specified hex contract address. It also
+	 * Load a HashStore-Contract from the specified hex contract address. It also
 	 * checks for validity of the contract. If loading was not possible, null is
 	 * returned.
 	 * 
 	 * @param contractAddress as hex
-	 * @return <b>LDHashNotary</b> or <b>null</b>, if unsuccessful.
+	 * @return <b>HashStore</b> or <b>null</b>, if unsuccessful.
 	 */
-	public LDHashNotary loadContract(String contractAddress) {
-		LDHashNotary contract = null;
+	public HashStore loadContract(String contractAddress) {
+		HashStore contract = null;
 		System.out.println("\nLoading contract ...");
 		try {
-			contract = LDHashNotary.load(contractAddress, web3j, this.credentials, this.gasProvider);
+			contract = HashStore.load(contractAddress, web3j, this.credentials, this.gasProvider);
 			System.out.println("Contract Address: " + contract.getContractAddress() + " (valid : "
 					+ this.validateContract(contract) + ")\n");
 		} catch (EnsResolutionException e) {
@@ -98,15 +98,15 @@ public class Web3jClient {
 	}
 
 	/**
-	 * Deploy a new contract instance of a LDHashNotary.
+	 * Deploy a new contract instance of a HashStore.
 	 * 
-	 * @return <b>LDHashNotary</b>
+	 * @return <b>HashStore</b>
 	 */
-	public LDHashNotary deployNewContract() {
+	public HashStore deployNewContract() {
 		System.out.println("\nDeploying new contract ...");
-		LDHashNotary contract = null;
+		HashStore contract = null;
 		try {
-			contract = LDHashNotary.deploy(this.web3j, this.credentials, this.gasProvider).send();
+			contract = HashStore.deploy(this.web3j, this.credentials, this.gasProvider).send();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -145,7 +145,7 @@ public class Web3jClient {
 	 * @param contract
 	 * @return <b>boolean</b>
 	 */
-	private boolean validateContract(LDHashNotary contract) {
+	private boolean validateContract(HashStore contract) {
 		try {
 			return contract.isValid();
 		} catch (IOException e) {

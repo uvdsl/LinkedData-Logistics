@@ -1,0 +1,83 @@
+# This Terse RDF Triple Language document was created by uvdsl@student.kit.edu.
+@prefix : <#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix ethon:  <http://ethon.consensys.net/> .
+@prefix pedigree: <http://purl.org/pedigree#>.
+
+:hasValidationInfo
+  rdf:type
+    rdf:Property ;
+  rdfs:label
+    "hasValidationInfo"@en ;
+  rdfs:domain
+    pedigree:Pedigree ;
+  rdfs:range
+    :ChainInfo ;
+  rdfs:comment
+    "The property identifies information on a blockchain for validation purposes."@en .
+	
+:hasContractAccount
+	a 
+	 ethon:EthOnObjectProperty ;
+	rdfs:label 
+	 "hasContractAccount"@en ;
+	rdfs:domain
+	 :ChainInfo ;
+	rdfs:range
+	 ethon:ContractAccount ;
+	rdfs:comment 
+	 "The property specifies a contract account available on the blockchain."@en .
+
+:hasBootNode
+	a
+	 ethon:EthOnObjectProperty ;
+	rdfs:label
+	 "hasBootNode"@en ;
+	rdfs:domain 
+	 :ChainInfo ;
+	rdfs:range
+	 :BootNode ;
+	rdfs:comment "The property specifies a boot node to connect to."@en .
+
+:hasEnodeURI
+  a
+    ethon:EthOnDataProperty ;
+  rdfs:label
+    "hasEnodeURI"@en ;
+  rdfs:domain
+    ethon:FullNode ;
+  rdfs:range
+    xsd:anyURI ;
+  rdfs:comment 
+   "The property specifies the enode URI of a node."@en .
+
+:hasNetworkId
+  a
+    ethon:NetworkDataProperty ;
+  rdfs:label
+    "hasNetworkId"@en ;
+  rdfs:domain
+    ethon:Network ;
+  rdfs:range
+    xsd:integer ;
+  rdfs:comment 
+   "The property specifies the ethereum networkId."@en .
+
+:ChainInfo
+  rdf:type
+    rdf:Class ;
+  rdfs:label
+    "ChainInfo"@en ;
+    rdfs:comment
+      "ValidationInfo is a dataset that contains all necessary information to verify the integrity of a pedigree, i.e. smart contract and bootNode of the blockchain network." .
+	  
+:BootNode
+  rdfs:subClassOf
+    ethon:FullNode ;
+  rdfs:label
+    "BootNode"@en ;
+  rdfs:comment
+    "A boot node is a known full node through which other nodes can join the network." .

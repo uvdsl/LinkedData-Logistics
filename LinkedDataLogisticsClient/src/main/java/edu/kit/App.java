@@ -3,8 +3,7 @@ package edu.kit;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.web3j.crypto.CipherException;
 
@@ -37,9 +36,6 @@ import org.web3j.crypto.CipherException;
  */
 public class App {
 
-	// BIRTH CERT : http://www.student.kit.edu/~uvdsl/data/birthCert.ttl
-	// BIRTH HASH : 0x4892db195c21090e39e04d2c8ea6f59e
-	// TRANSFER 1 : http://www.student.kit.edu/~uvdsl/data/linkedTransfer1.ttl
 	// WALLET HOME: ethereum/keystore/ldlWallet.json
 
 	private static int counter = 0;
@@ -54,25 +50,37 @@ public class App {
 				Thread.sleep(10);
 				command = request("\nTell me what you want!");
 				switch (command) {
+				case ("approve"):
+					System.out.println(approve());
+					break;
 				case ("switchWallets"):
 					switchWallets();
 					break;
-				case ("newProduct"):
-					System.out.println("Gas used: " + newProduct());
-					break;
-				case ("linkedTransfer"):
-					linkedTransfer();
+				case ("store"):
+					System.out.println(store());
 					break;
 				case ("linkedPedigree"):
-					linkedPedigree().forEach(
-							mapping -> mapping.forEach((key, value) -> System.out.println("\n" + key + "\n" + value)));
+					LinkedHashMap<String, String> linkedPedigree = linkedPedigree();
+					if (requestConfirmation("\nDisplay full Linked Pedigree RDF content?"))
+						linkedPedigree.forEach((key, value) -> System.out.println("\n" + key + "\n" + value));
 					break;
 				case ("checkPedigree"):
-					checkPedigree().forEach(
-							mapping -> mapping.forEach((key, value) -> System.out.println("\n" + key + "\n" + value)));
+					LinkedHashMap<String, Boolean> validationMap = checkPedigree();
+					System.out.println("\n\n\n-------------------------------------");
+					System.out.println(" [INFO] Hash validation results:");
+					System.out.println("-------------------------------------\n");
+					System.out.println("Validated\t:\t    URI\n");
+					validationMap.forEach((key, value) -> System.out.println("  " + value + "\t\t:\t" + key));
 					break;
 				case "hashDL":
 					hashDL();
+					break;
+				case "info":
+					String result = info();
+					System.out.println("\n\n\n-------------------------------------");
+					System.out.println(" [INFO] URI information results:");
+					System.out.println("-------------------------------------\n");
+					System.out.println(result);
 					break;
 				case ("exit"):
 					exit();
@@ -85,13 +93,14 @@ public class App {
 					System.out.println("\n [ECHO] You are not alone! :)");
 				case ("help"):
 					System.out.println("\n [COMMAND LIST] \n\t"
-							+ "switchWallets\tswitch to a different ethereum wallet\n\t"
-							+ "newProduct\tfetch adds new products to the smart contract\n\t"
-							+ "linkedTransfer\tconduct a full linked transfer on the ethereum blockchain\n\t"
-							+ "linkedPedigree\tfetch a linked pedigree from the LOC\n\t"
-							+ "checkPedigree\tcheck a linked pedigree from the LOC on the ethereum blockchain\n\t"
-							+ "hashDL\t\thash linked data identified by an uri\n\t" + "help\t\tdisplay this message\n\t"
-							+ "exit\t\thave a nice day!");
+							+ "store\t\tstore a hash via the Smart Contract on the Ethereum blockchain\n\t"
+							+ "approve\t\tapprove a Linked Pedigree part to be accurate on the Ethereum blockchain\n\t"
+							+ "linkedPedigree\tfetch a Linked Pedigree from the LOC\n\t"
+							+ "checkPedigree\tcheck a Linked Pedigree from the LOC on the Ethereum blockchain\n\t"
+							+ "hashDL\t\thash linked data identified by an uri\n\t"
+							+ "info\t\tlook up (owner, approval, prevPart) on a Linked Pedigree part from the Ethereum chain\n\t"
+							+ "switchWallets\tswitch to a different Ethereum wallet\n\t"
+							+ "help\t\tdisplay this message\n\t" + "exit\t\thave a nice day!");
 					break;
 				default:
 					System.out.println("\nTry again or cry for help ...");
@@ -127,35 +136,47 @@ public class App {
 		}
 	}
 
-	static String newProduct() throws IOException {
-		String birthCertURI = request("\nPlease enter the product's birth certificate uri:");
-		String address = request("\nPlease enter the product's new owner address:");
-		return service.registerNewProduct(birthCertURI, address);
-	}
-
-	static void linkedTransfer() throws IOException, InterruptedException {
-		List<Map<String, Boolean>> checkedPedigree = service.checkLinkedPedigree(linkedPedigree());
-		checkedPedigree
-				.forEach(mapping -> mapping.forEach((key, value) -> System.out.println("\n" + key + "\n" + value)));
-		if (requestConfirmation("\nContinue?")) {
-			String newTransferDocURI = request("\nPlease enter the URI of the product's new transfer document:");
-			String address = request("\nPlease enter the product's new owner address:");
-			String birthCertURI = (String) checkedPedigree.get(0).keySet().toArray()[0];
-			System.out.println(service.linkedTransfer(birthCertURI, newTransferDocURI, address));
+	static String store() throws IOException, InterruptedException {
+		String pedigreeURI = request("\nPlease enter the URI of the Linked Pedigree part:");
+		if (requestConfirmation("\nDisplay RDF content?")) {
+			System.out.println(service.fetchContent(pedigreeURI));
 		}
+		String address = request("\nPlease enter the product's next owner address:");
+		return service.storeHash(pedigreeURI, address);
 	}
 
-	static List<Map<String, String>> linkedPedigree() throws IOException {
-		String lastTransferDocURI = request("\nPlease enter the product's last transfer document uri:");
-		return service.fetchFullLinkedPedigree(lastTransferDocURI);
+	static LinkedHashMap<String, String> linkedPedigree() throws IOException {
+		String pedigreePartURI = request("\nPlease enter the product's last known Linked Pedigree part URI:");
+		return service.fetchLinkedPedigree(pedigreePartURI);
 	}
 
-	static List<Map<String, Boolean>> checkPedigree() throws IOException {
-		return service.checkLinkedPedigree(linkedPedigree());
+	static LinkedHashMap<String, Boolean> checkPedigree() throws IOException {
+		String pedigreePartURI = request("\nPlease enter the product's last known Linked Pedigree part URI:");
+		return service.checkLinkedPedigree(pedigreePartURI);
 	}
 
-	static void hashDL() throws IOException {
-		service.hashURI(request("\nPlease enter the URI to hash:"));
+	static String approve() throws IOException, InterruptedException {
+		String pedigreeURI = request("\nPlease enter the URI of the Linked Pedigree part:");
+		if (requestConfirmation("\nDisplay RDF content?")) {
+			System.out.println(service.fetchContent(pedigreeURI));
+		}
+		return service.approve(pedigreeURI);
+	}
+
+	static void hashDL() throws IOException, InterruptedException {
+		String uri = request("\nPlease enter the URI to hash:");
+		if (requestConfirmation("\nDisplay RDF content?")) {
+			System.out.println(service.fetchContent(uri));
+		}
+		service.hashURI(uri);
+	}
+
+	static String info() throws IOException, InterruptedException {
+		String uri = request("\nPlease enter the URI to get info to:");
+		if (requestConfirmation("\nDisplay RDF content?")) {
+			System.out.println(service.fetchContent(uri));
+		}
+		return service.getInfo(uri);
 	}
 
 	static String request(String request) throws IOException {
@@ -184,16 +205,16 @@ public class App {
 		System.out.println("\nBye! <3");
 		System.exit(0);
 	}
-	
+
 	private static String strip(String input) {
 		if (input.startsWith(" ")) {
 			input = input.substring(1);
 			return strip(input);
-		} 
+		}
 		if (input.endsWith(" ")) {
 			input = input.substring(0, input.length() - 1);
 			return strip(input);
-		} 
+		}
 		return input;
 	}
 

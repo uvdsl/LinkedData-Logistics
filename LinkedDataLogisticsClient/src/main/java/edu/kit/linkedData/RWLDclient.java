@@ -1,5 +1,6 @@
 package edu.kit.linkedData;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,11 +10,9 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.semanticweb.yars.nx.Node;
-import org.semanticweb.yars.nx.Nodes;
-
-import com.google.common.hash.Hashing;
 import com.google.common.hash.HashCode;
+
+import org.semanticweb.yars.nx.Node;
 
 import cl.uchile.dcc.blabel.label.GraphColouring.HashCollisionException;
 
@@ -82,18 +81,20 @@ public class RWLDclient {
 	 * Hash the <b>{@literal Iterable<Node[]>}</b> graph, as shown in the paper.
 	 * 
 	 * @param graph
-	 * @return <b>String</b> hash of graph
+	 * @return <b>byte[]</b> hash of graph
 	 */
-	public String hashGraph(Iterable<Node[]> graph) {
+	public byte[] hashGraph(Iterable<Node[]> graph) {
 		HashCode hash = null;
 		try {
-			 hash = this.hasher.hashRDFGraph(graph, Hashing.sha256());
+			 hash = this.hasher.hashRDFGraph(graph);
 		} catch (InterruptedException | HashCollisionException e) {
 			e.printStackTrace();
 			return null;
 		}
-		System.out.println("Hash: 0x" + hash.toString());
-	    return  "0x" + hash.toString();
+		System.out.println("\nHash:");
+		System.out.println("\t 0x" + hash.toString());
+		System.out.println("\t " + Arrays.toString(hash.asBytes()));
+	    return  hash.asBytes();
 	}
 
 }
