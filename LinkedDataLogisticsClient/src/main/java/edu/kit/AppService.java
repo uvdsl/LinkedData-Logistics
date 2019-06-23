@@ -1,12 +1,12 @@
 package edu.kit;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
-import org.bouncycastle.util.Arrays;
-import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Nodes;
 import org.web3j.crypto.CipherException;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -23,23 +23,26 @@ import edu.kit.ontology.LinkedOntology;
  */
 public class AppService {
 
-	private static RWLDclient rwldClient = null;
-	private static Web3jClient web3jClient = null;
+	private RWLDclient rwldClient = null;
+	private Web3jClient web3jClient = null;
 
+	/**
+	 * Start Linked Data client.
+	 */
 	public AppService() {
-		System.out.println(" [INFO] Starting Service ...");
+		System.out.println(" [INFO] Starting LinkedData-Chain Client ...");
 		rwldClient = new RWLDclient();
 	}
 
 	/**
-	 * Switch to another wallet.
+	 * login to a Ethereum wallet.
 	 * 
 	 * @param wallet_pass password to wallet
 	 * @param wallet_home path to wallet file
 	 * @throws CipherException when password is incorrect
 	 * @throws IOException     when wallet file could not be found
 	 */
-	public void switchWallets(String wallet_pass, String wallet_home) throws IOException, CipherException {
+	public void loginToWallet(String wallet_pass, String wallet_home) throws IOException, CipherException {
 		web3jClient = new Web3jClient(wallet_pass, wallet_home);
 		System.out.println(" [INFO] Thank you and welcome home: " + web3jClient.getWalletAddress() + "\n");
 	}
@@ -50,37 +53,65 @@ public class AppService {
 	 * pedigreePart is added. Else, the pedigreePart is registered as a new initial
 	 * part.
 	 * 
-	 * @param pedigreePartURI
+	 * @param pedigreeURI
 	 * @param newOwnerAddress
 	 * @return gas usesd [Action performed]
 	 */
-	public String storeHash(String pedigreePartURI, String newOwnerAddress) {
+	public String storeHash(String pedigreeURI, String newOwnerAddress) {
 		String result = null;
-
-		if (web3jClient == null)
-			App.switchWallets();
-
 		try {
-			byte[] hash = rwldClient.hashGraph(rwldClient.requestLinkedData(pedigreePartURI));
-			String prevPartURI = getPreviousPartURI(pedigreePartURI);
-			HashStore contract = web3jClient.loadContract(getContractAddress(pedigreePartURI));
-			System.out.println("\n [INFO] Issuing transaction.");
+			byte[] hash = rwldClient.hashGraph(rwldClient.requestLinkedData(pedigreeURI));
+			String prevPartURI = getPreviousPartURI(pedigreeURI);
+			HashStore contract = web3jClient.loadContract(getContractAddress(pedigreeURI));
 			CompletableFuture<TransactionReceipt> transaction = null;
 			if (prevPartURI == null) {
 				// register a new initial LP part
-				transaction = contract.initProduct(pedigreePartURI, hash, newOwnerAddress).sendAsync();
+				checkURInotUsed(contract, pedigreeURI);
+				System.out.println("\n [INFO] Issuing transaction.");
+				transaction = contract.initProduct(pedigreeURI, hash, newOwnerAddress).sendAsync();
 				System.out.println(" [INFO] Transaction pending ...");
 				result = "Gas used: " + transaction.get().getGasUsed().toString() + " [Registration]";
 			} else {
 				// add a intermedate LP part
-				transaction = contract.storeAndTransfer(prevPartURI, pedigreePartURI, hash, newOwnerAddress)
-						.sendAsync();
+				checkAuthorisation(contract, prevPartURI);
+				checkApproval(contract, prevPartURI);
+				System.out.println("\n [INFO] Issuing transaction.");
+				transaction = contract.storeAndTransfer(prevPartURI, pedigreeURI, hash, newOwnerAddress).sendAsync();
 				System.out.println(" [INFO] Transaction pending ...");
 				result = "Gas used: " + transaction.get().getGasUsed().toString() + " [Appending]";
+
 			}
 
+		} catch (InterruptedException | ExecutionException e) {
+			System.err.println("\t" + e.getLocalizedMessage());
+			result = " [INFO] Returning to main menu.";
+		}
+		return result;
+	}
+
+	/**
+	 * Approve a pedigreeURI
+	 * 
+	 * @param pedigreeURI
+	 * @return gas used
+	 */
+	public String approve(String pedigreeURI) {
+		String result = null;
+		try {
+			HashStore contract = web3jClient.loadContract(getContractAddress(pedigreeURI));
+			checkAuthorisation(contract, pedigreeURI);
+			if (verfiedHash(contract, pedigreeURI)) {
+				System.out.println("\n [INFO] Issuing transaction.");
+				CompletableFuture<TransactionReceipt> transaction = contract.approve(pedigreeURI).sendAsync();
+				System.out.println(" [INFO] Transaction pending ...");
+				result = "Gas used: " + transaction.get().getGasUsed().toString() + " [Approval]";
+			} else {
+				result = " [ERROR] Hash check on approval was not successfull!\n" + " [INFO] Approval not possible.\n";
+			}
+			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("\t" + e.getLocalizedMessage());
+			result = " [INFO] Returning to main menu.";
 		}
 		return result;
 	}
@@ -125,6 +156,73 @@ public class AppService {
 	}
 
 	/**
+	 * Retrieve the previous part (URI) of the input pedigree part.
+	 * 
+	 * @param pedigreePartURI
+	 * @return previous part URI
+	 */
+	private String getPreviousPartURI(String pedigreePartURI) {
+		String result = null;
+		List<Node> prevPartList = rwldClient.queryObjectForPredicate(pedigreePartURI,
+				LinkedOntology.PREDICATE_PREVIOUS_PART);
+
+		if (prevPartList == null) {
+			System.err.println("\n [WARN] Did not find a preceding Linked Pedigree part.");
+			boolean isInitial = isInitialPart(pedigreePartURI);
+			System.err.println(((isInitial) ? " [INFO] Did in fact" : " [ERROR] Did not")
+					+ " reach initial Linked Pedigree part.");
+			if (!isInitial) {
+				// assume this part to be initial? Or look it up? (hence the negation.)
+				isInitial = !App.requestConfirmation("\nLook up preceding Linked Pedigree part URI in Smart Contract?");
+				// if still not assumed to be initial
+				if (!isInitial) {
+					try {
+						result = web3jClient.loadContract(this.getContractAddress(pedigreePartURI))
+								.getPreviousPedigreeURI(pedigreePartURI).send();
+					} catch (Exception e) {
+						System.err.println("\t" + e.getMessage());
+					}
+				}
+			}
+		} else if (prevPartList.size() > 1) {
+			int i = 0;
+			System.err.println("\n [ERROR] Found more than one preceding Linked Pedigree part:");
+			for (Node potentialPrevPart : prevPartList) {
+				System.err.println(" [INFO] \t(" + i++ + ") " + strip(potentialPrevPart.toString()));
+			}
+
+			String response = App.request("\nPlease provide the index of the Linked Pedigree part to use:");
+			i = (response != null) ? Integer.valueOf(response) : 0;
+			result = prevPartList.get(i).toString();
+		} else {
+			result = prevPartList.get(0).toString();
+		}
+		if (result != null) {
+			result = strip(result);
+			System.out.println("\n [INFO] Found preceding Linked Pedigree part: " + result);
+		}
+		return result;
+	}
+
+	/**
+	 * Check if the input pedigree part is the initial part.
+	 * 
+	 * @param pedigreePartURI
+	 * @return boolean
+	 */
+	private boolean isInitialPart(String pedigreePartURI) {
+		List<Node> type_objects = rwldClient.queryObjectForPredicate(pedigreePartURI,
+				LinkedOntology.PREDICATE_PEDIGREE_STATUS);
+		boolean isInitial = false;
+		for (Node n : type_objects) {
+			if (strip(n.toString()).equals(strip(LinkedOntology.OBJECT_INITIAL_PART))) {
+				isInitial = true;
+			}
+		}
+		return isInitial;
+	}
+
+	/**
 	 * Retrieve the linked pedigree (URI : Content) by starting in the end of the
 	 * linked pedigree chain.
 	 * 
@@ -156,84 +254,6 @@ public class AppService {
 	}
 
 	/**
-	 * Retrieve the previous part (URI) of the input pedigree part.
-	 * 
-	 * @param pedigreePartURI
-	 * @return previous part URI
-	 */
-	private String getPreviousPartURI(String pedigreePartURI) {
-		String result = null;
-		List<Node> prevPartList = rwldClient.queryObjectForPredicate(pedigreePartURI,
-				LinkedOntology.PREDICATE_PREVIOUS_PART);
-
-		if (prevPartList == null) {
-			System.err.println("\n [WARN] Did not find a preceding Linked Pedigree part.");
-			boolean isInitial = isInitialPart(pedigreePartURI);
-			System.err.println(
-					((isInitial) ? " [INFO] Did in fact" : " [ERROR] Did not") + " reach initial Linked Pedigree part.");
-			if (!isInitial) {
-				try {
-					// assume this part to be initial? Or look it up? (hence the negation.)
-					isInitial = !App
-							.requestConfirmation("\nLook up preceding Linked Pedigree part URI in Smart Contract?");
-				} catch (IOException | InterruptedException e) {
-					e.printStackTrace();
-				}
-				// if still not assumed to be initial
-				if (!isInitial) {
-					if (web3jClient == null)
-						App.switchWallets();
-					try {
-						result = web3jClient.loadContract(this.getContractAddress(pedigreePartURI))
-								.getPreviousPedigreeURI(pedigreePartURI).send();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		} else if (prevPartList.size() > 1) {
-			int i = 0;
-			System.err.println("\n [ERROR] Found more than one preceding Linked Pedigree part:");
-			for (Node potentialPrevPart : prevPartList) {
-				System.err.println(" [INFO] \t(" + i++ + ") " + strip(potentialPrevPart.toString()));
-			}
-			String response = "0";
-			try {
-				response = App.request("\nPlease provide the index of the Linked Pedigree part to use:");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			i = Integer.valueOf(response);
-			result = prevPartList.get(i).toString();
-		} else {
-			result = prevPartList.get(0).toString();
-		}
-		if (result != null) {
-			result = strip(result);
-			System.out.println("\n [INFO] Found preceding Linked Pedigree part: " + result);
-		}
-		return result;
-	}
-
-	/**
-	 * Check if the input pedigree part is the initial part.
-	 * 
-	 * @param pedigreePartURI
-	 * @return boolean
-	 */
-	private boolean isInitialPart(String pedigreePartURI) {
-		List<Node> type_objects = rwldClient.queryObjectForPredicate(pedigreePartURI,
-				LinkedOntology.PREDICATE_PEDIGREE_STATUS);
-		boolean isInitial = false;
-		for (Node n : type_objects) {
-			if (strip(n.toString()).equals(strip(LinkedOntology.OBJECT_INITIAL_PART))) {
-				isInitial = true;
-			}
-		}
-		return isInitial;
-	}
-
-	/**
 	 * Recursively check the validity of the hashes stored via the smart contract
 	 * against the hashes directly generated from the linked data retrieved from the
 	 * linked pedigree's URIs.
@@ -245,41 +265,11 @@ public class AppService {
 	 */
 	// get, hash, check : repeat
 	public LinkedHashMap<String, Boolean> checkLinkedPedigree(String pedigreePartURI) {
-		if (web3jClient == null)
-			App.switchWallets();
-
 		LinkedHashMap<String, Boolean> result = new LinkedHashMap<>();
 		while (pedigreePartURI != null) {
 			HashStore contract = web3jClient.loadContract(getContractAddress(pedigreePartURI));
-			result.put(pedigreePartURI, isVerified(contract, pedigreePartURI));
+			result.put(pedigreePartURI, verfiedHash(contract, pedigreePartURI));
 			pedigreePartURI = getPreviousPartURI(pedigreePartURI);
-		}
-		return result;
-	}
-
-	/**
-	 * Approve a pedigreeURI
-	 * 
-	 * @param pedigreeURI
-	 * @return gas used
-	 */
-	public String approve(String pedigreeURI) {
-		if (web3jClient == null)
-			App.switchWallets();
-		String result = null;
-		try {
-			HashStore contract = web3jClient.loadContract(getContractAddress(pedigreeURI));
-			if (isVerified(contract, pedigreeURI)) {
-				System.out.println("\n [INFO] Issuing transaction.");
-				CompletableFuture<TransactionReceipt> transaction = contract.approve(pedigreeURI).sendAsync();
-				System.out.println(" [INFO] Transaction pending ...");
-				result = "Gas used: " + transaction.get().getGasUsed().toString() + " [Approval]";
-			} else {
-				result = " [ERROR] Hash check on approval was not successfull!\n" + " [INFO] Approval not possible.\n";
-			}
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return result;
 	}
@@ -300,8 +290,6 @@ public class AppService {
 	 * @param uri
 	 */
 	public String getInfo(String pedigreeURI) {
-		if (web3jClient == null)
-			App.switchWallets();
 		StringBuilder result = new StringBuilder();
 		String contractAddress = getContractAddress(pedigreeURI);
 		HashStore contract = web3jClient.loadContract(contractAddress);
@@ -311,15 +299,17 @@ public class AppService {
 		return result.toString();
 	}
 
+	//
+	// pre modifier checks
+	//
+
 	/**
 	 * Verifies a fresh generated hash against the contract hash of the input uri.
 	 * 
 	 * @param pedigreeURI
 	 * @return
 	 */
-	public boolean isVerified(HashStore contract, String pedigreeURI) {
-		if (web3jClient == null)
-			App.switchWallets();
+	public boolean verfiedHash(HashStore contract, String pedigreeURI) {
 		try {
 			byte[] contractHash = contract.getHash(pedigreeURI).send();
 			byte[] uriHash = rwldClient.hashGraph(rwldClient.requestLinkedData(pedigreeURI));
@@ -331,10 +321,80 @@ public class AppService {
 			}
 			return truth;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("\t" + e.getLocalizedMessage());
 		}
 		return false;
 	}
+
+	/**
+	 * Checks if the current wallet is current owner of the input Link Pedigree
+	 * 
+	 * @param pedigreeURI
+	 * @return
+	 * @throws InterruptedException
+	 */
+	public boolean checkAuthorisation(HashStore contract, String pedigreeURI) throws InterruptedException {
+		String wallet = web3jClient.getWalletAddress();
+		String owner = getOwner(contract, pedigreeURI);
+		boolean truth = owner.equals(wallet);
+		if (!truth) {
+			System.out.println("\n [WARN] User not authorised: " + pedigreeURI);
+			System.out.println(" [WARN] Transaction will be rejected by Smart Contract.");
+			if (!App.requestConfirmation("Proceed anyway? (Will result in failing transaction: 0x0 (out of gas?)")) {
+				throw new InterruptedException("\n [INFO] Aborting transaction.");
+			}
+		} else {
+			System.err.println("\n [INFO] User authorised: " + pedigreeURI);
+		}
+		return truth;
+	}
+
+	/**
+	 * Checks if the input Link Pedigree has been approved.
+	 * 
+	 * @param pedigreeURI
+	 * @return
+	 * @throws InterruptedException
+	 */
+	public boolean checkApproval(HashStore contract, String pedigreeURI) throws InterruptedException {
+		boolean truth = getApprovalStatus(contract, pedigreeURI);
+		if (!truth) {
+			System.out.println("\n [WARN] Not approved: " + pedigreeURI);
+			System.out.println(" [WARN] Transaction will be rejected by Smart Contract.");
+			if (!App.requestConfirmation("Proceed anyway? (Will result in failing transaction: 0x0 (out of gas?)")) {
+				throw new InterruptedException("\n [INFO] Aborting transaction.");
+			}
+		} else {
+			System.err.println("\n [INFO] Approved: " + pedigreeURI);
+		}
+		return truth;
+	}
+
+	/**
+	 * Checks if the input Link Pedigree has been already been used.
+	 * 
+	 * @param pedigreeURI
+	 * @return
+	 * @throws InterruptedException
+	 */
+	public boolean checkURInotUsed(HashStore contract, String pedigreeURI) throws InterruptedException {
+		String owner = getOwner(contract, pedigreeURI);
+		boolean truth = owner.equals("0x0000000000000000000000000000000000000000");
+		if (!truth) {
+			System.out.println("\n [WARN] Already used: " + pedigreeURI);
+			System.out.println(" [WARN] Transaction will be rejected by Smart Contract.");
+			if (!App.requestConfirmation("Proceed anyway? (Will result in failing transaction: 0x0 (out of gas?)")) {
+				throw new InterruptedException("\n [INFO] Aborting transaction.");
+			}
+		} else {
+			System.err.println("\n [INFO] Using: " + pedigreeURI);
+		}
+		return truth;
+	}
+
+	//
+	// other
+	//
 
 	/**
 	 * Strip URIs, remove starting or ending ",<,>
@@ -360,36 +420,34 @@ public class AppService {
 	// DEV FUNCTIONS
 	//
 	public String getOwner(HashStore contract, String pedigreeURI) {
-		if (web3jClient == null)
-			App.switchWallets();
+		String result;
 		try {
-			return contract.getOwner(pedigreeURI).send();
+			result = contract.getOwner(pedigreeURI).send();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("\t" + e.getMessage());
+			result = " [INFO] Returning to main menu.";
 		}
-		return null;
+		return result;
 	}
 
 	public boolean getApprovalStatus(HashStore contract, String pedigreeURI) {
-		if (web3jClient == null)
-			App.switchWallets();
 		try {
 			return contract.getApproval(pedigreeURI).send();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("\t" + e.getMessage());
 		}
 		return false;
 	}
 
 	public String getPreviousPartURI(HashStore contract, String pedigreeURI) {
-		if (web3jClient == null)
-			App.switchWallets();
+		String result;
 		try {
 			return contract.getPreviousPedigreeURI(pedigreeURI).send();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("\t" + e.getMessage());
+			result = " [INFO] Returning to main menu.";
 		}
-		return null;
+		return result;
 	}
 
 }
