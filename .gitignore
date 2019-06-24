@@ -1,5 +1,4 @@
 
 *.class
 *.prefs
-ethClient/.project
 LinkedDataChainClient/target/
