@@ -5,7 +5,7 @@ For a quick overview, see the information provided [below](https://github.com/uv
 
 <p>
 
-For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/resources/demo_instructions.txt) or take a look at our [demo website](tbd).
+For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/resources/demo_instructions.txt) or take a look at our [demo website](http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/).
 
 ## Prerequisite for LinkedDataChainClient
 a) Have [NxParser](https://github.com/nxparser/nxparser) version 3.0.0-SNAPSHOT installed. If not, quickly:
