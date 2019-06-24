@@ -7,28 +7,6 @@ import java.util.LinkedHashMap;
 
 import org.web3j.crypto.CipherException;
 
-/*
- * 
- * 
- * Init Blockchain: geth --datadir ethereum init ethereum/genesis.json // already done
- * Copy keystore // already done
- * Smart Contract available at 0x0cc602df7db83fa106e2978a4e91dd0d097e48b8
- * 
- * Start node: 	geth --port 3000 --networkid 58343 --nodiscover --datadir=ethereum --maxpeers=0  --rpc --rpcport 8543 --rpcapi "eth,net,web3,personal,miner"
- * Access node: geth attach http://localhost:8543
- * 
- * personal.unlockAccount("0x401cbc58de13cdc43a3da1c557d0583f43deaa1d", "dld") // for deployment of smart contracts via https://remix.ethereum.org/#optimize=false&version=soljson-v0.5.3+commit.10d17f24.js
- * "0xe495c94b8776a1550e79923f1e7f4aa21013fd39", "ldl"
- * miner.start(1)
- * miner.stop(1)
- * 
- * 
- * Various:
- * miner.setEtherbase("0x401cbc58de13cdc43a3da1c557d0583f43deaa1d")
- * web3.fromWei(eth.getBalance("0x401cbc58de13cdc43a3da1c557d0583f43deaa1d"), "ether")
- * web3j solidity generate -a F:\Users\Chris\Programming\workspace\LinkedDataLogistics\LinkedDataLogisticsClient\src\main\resources\contract\LDHashNotary.abi -b F:\Users\Chris\Programming\workspace\LinkedDataLogistics\LinkedDataLogisticsClient\src\main\resources\contract\LDHashNotary.bin -p edu.kit.eth -o F:\Users\Chris\Programming\workspace\LinkedDataLogistics\LinkedDataLogisticsClient\src\main\java\
- */
-
 /**
  *
  * @author Christoph
