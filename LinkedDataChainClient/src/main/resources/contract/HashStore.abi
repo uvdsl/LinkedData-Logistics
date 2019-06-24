@@ -1,0 +1,140 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "previousPedigreeURI",
+				"type": "string"
+			}
+		],
+		"name": "approve",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "pedigreeURI",
+				"type": "string"
+			},
+			{
+				"name": "graphHash",
+				"type": "bytes16"
+			},
+			{
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "initProduct",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "previousPedigreeURI",
+				"type": "string"
+			},
+			{
+				"name": "pedigreeURI",
+				"type": "string"
+			},
+			{
+				"name": "graphHash",
+				"type": "bytes16"
+			},
+			{
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "storeAndTransfer",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "pedigreeURI",
+				"type": "string"
+			}
+		],
+		"name": "getApproval",
+		"outputs": [
+			{
+				"name": "approval",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "pedigreeURI",
+				"type": "string"
+			}
+		],
+		"name": "getHash",
+		"outputs": [
+			{
+				"name": "hash",
+				"type": "bytes16"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "pedigreeURI",
+				"type": "string"
+			}
+		],
+		"name": "getOwner",
+		"outputs": [
+			{
+				"name": "ownerAddress",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "pedigreeURI",
+				"type": "string"
+			}
+		],
+		"name": "getPreviousPedigreeURI",
+		"outputs": [
+			{
+				"name": "previousPedigreeURI",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
