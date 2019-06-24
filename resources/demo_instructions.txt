@@ -44,9 +44,10 @@ Remember:
 
 
 ## LD-CHAIN CLIENT
-
+	
+	$ cd ./LinkedDataChainClient
 	$ mvn package
-	$ java -Xmx1024M -jar ./LinkedDataChainClient/target/LinkedDataChainClient-jar-with-dependencies.jar
+	$ java -Xmx1024M -jar ./target/LinkedDataChainClient-jar-with-dependencies.jar
 
 The main menu will ask you to tell it what you want. To see all commands enter:
 	# help

@@ -23,8 +23,9 @@ geth --port 3000 --networkid 7331 --nodiscover --datadir=./LinkedDataChainClient
 
 ## Build and run the LinkedDataChainClient
 ```bash
+cd ./LinkedDataChainClient
 mvn package
-java -Xmx1024M -jar ./LinkedDataChainClient/target/LinkedDataChainClient-jar-with-dependencies.jar
+java -Xmx1024M -jar ./target/LinkedDataChainClient-jar-with-dependencies.jar
 ```
 
 <p>
