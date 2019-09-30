@@ -1,0 +1,6 @@
+@prefix food: <http://www.w3.org/TR/2003/PR-owl-guide-20031209/food#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<> a food:Fish ; rdfs:label "Fisch 4223" ;
+  foaf:depiction <https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Great_White_Shark_%2814730719119%29.jpg/640px-Great_White_Shark_%2814730719119%29.jpg> . 

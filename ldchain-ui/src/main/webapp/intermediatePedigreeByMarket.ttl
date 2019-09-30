@@ -1,0 +1,29 @@
+# This Terse RDF Triple Language document was created by uvdsl@student.kit.edu.
+@prefix : <#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix pedigree: <http://purl.org/pedigree#>.
+@prefix ethPedigree: <http://people.aifb.kit.edu/co1683/2019/ld-chain/vocab#> .
+@prefix truckers: <http://student.kit.edu/~uvdsl/data/demo/semantics19/> .
+@prefix market: <http://student.kit.edu/~uvdsl/data/demo/semantics19/market.ttl#> .
+@prefix validation: <http://student.kit.edu/~uvdsl/data/demo/semantics19/> .
+
+:
+	a
+		pedigree:Pedigree ;
+	pedigree:hasPedigreeStatus
+		pedigree:Intermediate ;
+	pedigree:hasReceivedPedigree
+		truckers:intermediatePedigreeByTrucker.ttl ;
+	pedigree:pedigreeCreationTime
+		"2018-12-24T12:00:00"^^xsd:dateTime ;
+	pedigree:hasProductInfo
+		market:product ;
+	pedigree:hasTransactionInfo :transactionInfo;
+	pedigree:hasConsignmentInfo :consignmentInfo;
+	dct:publisher
+		market:company .
+
+# validation via Smart Contract
+: ethPedigree:hasValidationInfo validation:blockchainInfo.ttl .

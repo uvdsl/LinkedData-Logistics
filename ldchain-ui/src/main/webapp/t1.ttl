@@ -1,0 +1,13 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix here: <> .
+
+<> a foaf:Person ;
+  foaf:name "Manni";
+  rdfs:label "Manni";
+  wdt:P106 wd:Q508846 ;
+  foaf:depiction <https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Truckdriver.jpg/1024px-Truckdriver.jpg> ;
+  ldp:inbox <t1-inbox.ttl> .
