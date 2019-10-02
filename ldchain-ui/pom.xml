@@ -14,11 +14,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jetty.version>9.2.28.v20190418</jetty.version>
 	</properties>
-<!--
+
 	<dependencies>
 		<dependency>
--->			<!-- only for its CORS filter: -->
-<!--			<groupId>org.eclipse.jetty</groupId>
+			<!-- only for its CORS filter: -->
+			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlets</artifactId>
 			<version>${jetty.version}</version>
 			<exclusions>
@@ -37,7 +37,7 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
--->
+
 	<build>
 		<plugins>
 			<plugin>
