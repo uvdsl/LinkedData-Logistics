@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>edu.kit.aifb.websci</groupId>
+	<artifactId>ldchain-ui</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>LDChain UI</name>
+
+	<packaging>war</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jetty.version>9.2.28.v20190418</jetty.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+					<scanIntervalSeconds>3</scanIntervalSeconds>
+					<!-- To log HTTP requests on INFO level: -->
+					<requestLog implementation="org.eclipse.jetty.server.Slf4jRequestLog"></requestLog>
+					<webApp>
+		     				<contextPath>/ldchain-ui</contextPath>
+					</webApp>
+				</configuration>
+				<dependencies>
+					<!-- Such that above logging works: -->
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+						<version>1.6.6</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!-- we annotate instead of using web.xml -->
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>  
+	</build>
+</project>
+

@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="http://netdna.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://linkeddata.github.io/rdflib.js/dist/rdflib.min.js"></script>
+
+<script type="application/javascript">
+const FOAF = $rdf.Namespace('http://xmlns.com/foaf/0.1/');
+const RDFS = $rdf.Namespace('http://www.w3.org/2000/01/rdf-schema#');
+const WDT  = $rdf.Namespace('http://www.wikidata.org/prop/direct/');
+const WD   = $rdf.Namespace('http://www.wikidata.org/entity/');
+const LDP  = $rdf.Namespace('http://www.w3.org/ns/ldp#');
+const AS   = $rdf.Namespace('https://www.w3.org/ns/activitystreams#');
+
+var poller;
+var inbox;
+
+const store = $rdf.graph();
+const fetcher = new $rdf.Fetcher(store);
+
+async function doStuff() {
+  if (typeof poller != 'undef')
+    clearInterval(poller);
+
+
+
+  const person = document.getElementById('person-uri').value;
+  if (person === undefined || person === "")
+    return;
+
+  await fetcher.load(person);
+
+  const fullName = store.any($rdf.sym(person), FOAF('name'));
+  const profession = store.any($rdf.sym(person), WDT('P106'));
+  const depiction = store.any($rdf.sym(person), FOAF('depiction'));
+  inbox = store.any($rdf.sym(person), LDP('inbox'));
+  $('#fullName').text(fullName && fullName.value);
+  document.getElementById('depiction').style.backgroundImage = "url('" + depiction.value + "')";
+
+// await fetcher.load(profession.value);
+// WikiData does not like CORS requests, hence we add the important information here:
+  store.add(WD('Q508846'), RDFS('label'), $rdf.literal('Fernfahrer', 'de'));
+  store.add(WD('Q331432'), RDFS('label'), $rdf.literal('Fischer', 'de'));
+  
+  const professionLabel = store.any($rdf.sym(profession && profession.value), RDFS('label'));
+  $('#profession').text(professionLabel && professionLabel.value);
+
+  refresh();
+
+  poller = setInterval("refresh()",2000);
+
+};
+
+async function refresh() {
+
+  fetcher.refresh(inbox);
+
+  var inboxItems = store.each(inbox, LDP('contains'));
+  if (inboxItems.length === 0)
+    document.getElementById('inbox').innerHTML = '';
+
+  for (var i = 0 ; i < inboxItems.length; i++) {
+
+    // TODO: properly implement join of inboxItems and rendered articles.
+
+    var inboxItem = inboxItems[i];
+    fetcher.refresh(inboxItem);
+
+    var offeredItem = store.any(inboxItem, AS('object'));
+    if (offeredItem === undefined)
+      break;
+    fetcher.refresh(offeredItem);
+
+    var renderedArticle = document.getElementById('inbox').children.namedItem(hashCode(offeredItem.value));
+    if (renderedArticle !== null && renderedArticle.getAttribute("etag") === fetcher.getHeader(offeredItem,"etag")[0]) {
+      continue;
+    }
+
+    var article = document.createElement("article");
+    article.setAttribute("class", "card");
+    article.setAttribute("id", hashCode(offeredItem.value));
+    if (fetcher.getHeader(offeredItem.value,"etag") !== undefined)
+      article.setAttribute("etag", fetcher.getHeader(offeredItem.value,"etag")[0]);
+
+    var inboxItemDepiction = store.any(offeredItem, FOAF('depiction'));
+
+    var image = document.createElement("img");
+    image.setAttribute("src", inboxItemDepiction.value);
+    image.setAttribute("class", "card-img-top");
+    article.appendChild(image);
+
+    var body = document.createElement("div");
+    body.setAttribute("class", "card-body");
+    article.appendChild(body);
+
+    var inboxItemLabel = store.any(offeredItem, RDFS('label'));
+
+    var label = document.createElement("h4");
+    label.innerText = inboxItemLabel.value;
+    label.setAttribute("class", "card-title");
+    body.appendChild(label);
+
+    var publish = document.createElement("a");
+    publish.innerText="Publish";
+    publish.setAttribute("class", "btn btn-primary");
+    publish.setAttribute("href", "#");
+    body.appendChild(publish);
+
+    var remove = document.createElement("a");
+    remove.innerText="Remove";
+    remove.setAttribute("class", "btn");
+    remove.setAttribute("href", "#");
+    body.appendChild(remove);
+
+    if (renderedArticle === null)
+      document.getElementById("inbox").appendChild(article);
+    else 
+      document.getElementById("inbox").replaceChild(article, renderedArticle);
+  }
+};
+
+function hashCode(str) {
+  return str.split('').reduce((prevHash, currVal) =>
+    (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+}
+function resolve(url, base_url) {
+  // https://stackoverflow.com/a/12965135/
+  var doc      = document
+    , old_base = doc.getElementsByTagName('base')[0]
+    , old_href = old_base && old_base.href
+    , doc_head = doc.head || doc.getElementsByTagName('head')[0]
+    , our_base = old_base || doc_head.appendChild(doc.createElement('base'))
+    , resolver = doc.createElement('a')
+    , resolved_url
+    ;
+  our_base.href = base_url || '';
+  resolver.href = url;
+  resolved_url  = resolver.href; // browser magic at work here
+
+  if (old_base) old_base.href = old_href;
+  else doc_head.removeChild(our_base);
+  return resolved_url;
+}
+</script>
+
+<style type="text/css">
+article.card { flex-grow:0 !important; flex-basis:400px !important; }
+</style>
+</head>
+<body onLoad="javascript:doStuff()">
+
+<nav class="navbar navbar-dark bg-dark fixed-top">
+<span class="navbar-brand">Linked Data Chain Demo</span>
+
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+  <span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse navbar-right" id="collapsibleNavbar">
+
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <button class="input-group-text" data-toggle="modal" data-target="#favourite-modal">Favourites</button>
+    </div>
+    <input type="text" class="form-control" placeholder="User URI" id="person-uri"></input>
+    <div class="input-group-append">
+      <button class="btn btn-success" onClick="javascript:doStuff()">Load</button>
+    </div>
+  </div>
+  <button class="btn btn-danger" onClick="javascript:clearInterval(poller)">Stop Polling</button>
+  <button class="btn btn-danger" onClick="javascript:store.removeMatches(null,null,null)">Clear Store</button>
+
+</div>
+
+</nav>
+
+<header class="jumbotron text-center" style="margin-top:56px;">
+  <figure>
+    <div id="depiction" style="background-image:url('//upload.wikimedia.org/wikipedia/commons/e/e4/Posthorn-echt.jpg'); width:200px; height:200px; overflow:hidden; background-repeat:no-repeat; background-position:center; background-size:cover; " class="mx-auto rounded-circle">&nbsp;</div>
+    <figcaption>
+      <h1 id="fullName">Placeholder</h1>
+      <span id="profession" style="font-style:italic;">Placeholder</span>
+    </figcaption>
+  </figure>
+</header>
+
+<div class="container">
+<h3 class="text-center text-uppercase">LDN Inbox</h3>
+<br>
+<div id="inbox" class="card-deck" style="margin-left:unset; margin-right:unset;">
+    <article class="card">
+      <img class="card-img-top" src="//upload.wikimedia.org/wikipedia/commons/thumb/0/02/Red_Cross_Parcel.jpg/640px-Red_Cross_Parcel.jpg">
+      <div class="card-body">
+        <h4 class="card-title">Placeholder</h4>
+<!--        <p class="card-text">Lorem ipsum dolor sit amet, adipiscing. Lorem ipsum dolor sit amet, consectetuer adipiscing. Lorem ipsum dolor sit amet, adipiscing. Lorem ipsum dolor sit amet, adipiscing. Lorem ipsum dolor sit amet, consectetuer adipiscing. Lorem ipsum dolor.</p>-->
+        <a href="#" class="btn btn-primary">Publish</a>
+        <a href="#" class="btn">Remove</a>
+      </div>
+    </article>
+</div>
+</div>
+
+<!-- Modal for Favourites -->
+<div class="modal" id="favourite-modal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Favourites</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+    <div class="modal-body">
+      <h5>Testing:</h5>
+      <ul>
+        <li><a onClick="javascript:document.getElementById('person-uri').value=resolve(this.textContent)" href="#">t1.ttl</a></li>
+        <li><a onClick="javascript:document.getElementById('person-uri').value=resolve(this.textContent)" href="#">f1.ttl</a></li>
+        <li><a onClick="javascript:document.getElementById('person-uri').value=this.textContent" href="#">http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/data/t1.ttl</a></li>
+        <li><a onClick="javascript:document.getElementById('person-uri').value=this.textContent" href="#">http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/data/f1.ttl</a></li>
+        <li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+ </div>
+</div>
+
+</body>
+</html>
