@@ -11,4 +11,8 @@
      <filter-name>cross-origin</filter-name>
      <url-pattern>/*</url-pattern>
 </filter-mapping>
+<mime-mapping> 
+    <extension>ttl</extension> 
+    <mime-type>text/turtle</mime-type> 
+</mime-mapping>
 </web-app>
