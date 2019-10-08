@@ -8,5 +8,5 @@
   as:actor <f1.ttl> ;
   as:target <t1.ttl> ;
   as:object <s1.ttl> ;
-  rdfs:seeAlso <initialPedigreeByFisher.ttl> .
+  rdfs:seeAlso <intermediatePedigreeByMarket.ttl> .
 

@@ -5,9 +5,9 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix pedigree: <http://purl.org/pedigree#>.
 @prefix ethPedigree: <http://people.aifb.kit.edu/co1683/2019/ld-chain/vocab#> .
-@prefix fisherman: <http://student.kit.edu/~uvdsl/data/demo/semantics19/> .
-@prefix truckers: <http://student.kit.edu/~uvdsl/data/demo/semantics19/truckers.ttl#> .
-@prefix validation: <http://student.kit.edu/~uvdsl/data/demo/semantics19/> .
+@prefix fisherman: <http://localhost:8080/ldchain-ui/> .
+@prefix truckers: <http://localhost:8080/ldchain-ui/> .
+@prefix validation: <http://localhost:8080/ldchain-ui/> .
 
 :
 	a
@@ -15,7 +15,7 @@
 	pedigree:hasPedigreeStatus
 		pedigree:Intermediate ;
 	pedigree:hasReceivedPedigree
-		fisherman:initialPedigreeByFisher.ttl ;
+		fisherman:initialPedigreeByFisher ;
 	pedigree:pedigreeCreationTime
 		"2018-12-01T12:00:00"^^xsd:dateTime ;
 	pedigree:hasProductInfo
@@ -23,7 +23,7 @@
 	pedigree:hasTransactionInfo :transactionInfo;
 	pedigree:hasConsignmentInfo :consignmentInfo;
 	dct:publisher
-		truckers:company .
+		truckers:t1 .
 
 # validation via Smart Contract
-: ethPedigree:hasValidationInfo validation:blockchainInfo.ttl .
+: ethPedigree:hasValidationInfo validation:blockchainInfo .
