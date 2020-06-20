@@ -8,7 +8,7 @@ For a short showcase, take a look at our demo websites for the CLI [(SEMANTiCS 2
 You can also read the corresponding Posters&Demo papers of the CLI [[2](https://github.com/uvdsl/LinkedData-Logistics#sources)] and the Webagent [[3](https://github.com/uvdsl/LinkedData-Logistics#sources)].
 
 
-Regarding the data environment for the demos, you find all the RDF and blockchain in [data](https://github.com/uvdsl/LinkedData-Logistics/data).
+Regarding the data environment for the demos, you find all the RDF and blockchain in [data](https://github.com/uvdsl/LinkedData-Logistics/tree/master/data).
 
 ---
 
@@ -41,6 +41,6 @@ This code should not be deployed in a real business environment without review, 
 
 [1] Braun, CHJ, and Käfer, T: Verifying the Integrity of Hyperlinked Information Using Linked Data and Smart Contracts. In: Proceedings of the 15th International Conference on Semantic Systems (SEMANTiCS) (2019)
 
-[2] Braun, CHJ, and Käfer, T: Verifying the Integrity of Information along a Supply Chain using Linked Data and Smart Contracts. In: Proceedings of Posters and Demos at the 15th International Conference on Semantic Systems (SEMANTiCS)(2019)
+[2] Braun, CHJ, and Käfer, T: Verifying the Integrity of Information along a Supply Chain using Linked Data and Smart Contracts. In: Proceedings of Posters and Demos at the 15th International Conference on Semantic Systems (SEMANTiCS) (2019)
 
 [3] Preprint available [here](tbd).
