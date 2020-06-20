@@ -18,7 +18,7 @@ The agent thus allows for participation in the supply chain network, manages the
 The implementaion of 1-4 are basically a rewrite of the Java code in Javascript to put a new shiny UI on top of it.
 The implementation of 5 and 6 as well as the unique combination of the single parts are the contributions of this demonstration.
 
-For a short showcase, take a look at our [demo website](http://people.aifb.kit.edu/co1683/2020/bpm-demo/).
+For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/webagent/demo_instructions.txt) or take a look at our [demo website](http://people.aifb.kit.edu/co1683/2020/bpm-demo/).
 
 
 ## Prerequisite for ldca_v1
