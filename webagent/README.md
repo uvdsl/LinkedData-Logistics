@@ -20,22 +20,23 @@ The implementation of 5 and 6 as well as the unique combination of the single pa
 
 For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/webagent/demo_instructions.txt) or take a look at our [demo website](http://people.aifb.kit.edu/co1683/2020/bpm-demo/).
 
+---
 
 ## Prerequisite for ldca_v1
 ```
 cd ./ldva_v1
 npm install
 ```
-In addition, you need a Ethereum Blockchain with an instance of the HashStore Smart Contract as well as user profiles described using RDF. Have a look at the [data folder](https://github.com/uvdsl/LinkedData-Logistics/data)!
-You need an instance of an Linked Data hasher running, e.g. [LDH](https://github.com/uvdsl/ldh).
-For the inbox and outbox, you can use a basic Linked Data container like this one, [LDBBC](https://github.com/kaefer3000/ldbbc).
+Then run it locally. Alternatively, use Docker!
 
 ## Build and run with Docker
 ```
 docker build -t ldca_v1:latest ./ldca_v1
 docker run -d --name LDCA_v1 ldca_v1:latest
 ```
-
+In addition to the webagent, you need a Ethereum Blockchain with an instance of the HashStore Smart Contract as well as user profiles described using RDF. Have a look at the [data folder](https://github.com/uvdsl/LinkedData-Logistics/data)!
+You need an instance of an Linked Data hasher running, e.g. [LDH](https://github.com/uvdsl/ldh).
+For the inbox and outbox, you can use a basic Linked Data container like this one, [LDBBC](https://github.com/kaefer3000/ldbbc).
 
 ---
 
