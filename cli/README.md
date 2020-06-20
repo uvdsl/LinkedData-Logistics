@@ -12,8 +12,6 @@ Our implementation consists of the following parts:
 
 The implementation of 2 and 4 as well as the unique combination of the single parts are the contributions of this demonstration.
 
-<br>
-
 For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/cli/demo_instructions.txt) or take a look at our [demo website](http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/).
 
 ---

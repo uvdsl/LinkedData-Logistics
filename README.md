@@ -3,12 +3,10 @@ This project is concerned with the verification of Linked Data in the logistics 
 As ensuring integrity of Linked Data is inherently difficult, we propose a scheme to provide proof in a trustless manner by using *Smart Contracts* on the Ethereum platform.
 For a quick overview, see the information provided below or read our research paper [[1](https://github.com/uvdsl/LinkedData-Logistics#sources)], availbale [here](https://link.springer.com/chapter/10.1007%2F978-3-030-33220-4_28)!
 
-<p>
 
 For a short showcase, take a look at our demo websites for the CLI [(SEMANTiCS 2019 Demo)](http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/) and the Webagent [(BPM 2020)](http://people.aifb.kit.edu/co1683/2020/bpm-demo/), the successor of the CLI.
 You can also read the corresponding Posters&Demo papers of the CLI [[2](https://github.com/uvdsl/LinkedData-Logistics#sources)] and the Webagent [[3](https://github.com/uvdsl/LinkedData-Logistics#sources)].
 
-<br>
 
 Regarding the data environment for the demos, you find all the RDF and blockchain in [data](https://github.com/uvdsl/LinkedData-Logistics/data).
 
