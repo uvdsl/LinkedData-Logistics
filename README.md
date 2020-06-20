@@ -28,8 +28,6 @@ Linked Data is a light-weight standard-based way to publish data in a decentrali
 
 Hence, we ask: Can we combine the verification capabilities of the distributed ledger with Linked Data management?
 
-<br>
-
 **Solution.** 
 Take a look at the README files of the CLI and the webagent to find out!
 
