@@ -1,0 +1,24 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <#> .
+@prefix ethon:  <http://ethon.consensys.net/> .
+@prefix ldchain: <http://people.aifb.kit.edu/co1683/2019/ld-chain/vocab#> .
+
+<> a foaf:Person , ethon:ExternalActor ;
+  foaf:name "Manni";
+  rdfs:label "Manni";
+  wdt:P106 "Trucker" ;
+  foaf:depiction <https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Truckdriver.jpg/1024px-Truckdriver.jpg> ;
+  ldp:inbox <http://localhost:14007/ldbbc/> ;
+  ldp:outbox <http://localhost:14007/ldbbc/> ;
+  ldp:docbox <http://localhost:14007/ldbbc/> ;
+  ldchain:hasHasherServer <http://localhost:14004> ;
+  ldchain:hasDefaultConnection <http://localhost:8543> ;
+  ethon:controlsAccount :truckerAccount .
+  
+:truckerAccount a ethon:ExternalAccount;
+  ethon:address "a578f64d2bea4e738b5f9314782b769dbab5a3dc"^^xsd:hexBinary .

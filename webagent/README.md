@@ -22,7 +22,6 @@ The implementation of 5 and 6 as well as the unique combination of the single pa
 
 For a short showcase, take a look at our [demo website](http://people.aifb.kit.edu/co1683/2020/bpm-demo/).
 
-<br>
 
 ## Prerequisite for ldca_v1
 ```
@@ -39,9 +38,9 @@ docker build -t ldca_v1:latest ./ldca_v1
 docker run -d --name LDCA_v1 ldca_v1:latest
 ```
 
-<br>
 
 ---
+
 ## Sources
 
 [1] Braun, CHJ, and Käfer, T: Verifying the Integrity of Information along a SupplyChain using Linked Data and Smart Contracts. In: Proceedings of Posters andDemos at the 15th International Conference on Semantic Systems (SEMANTiCS)(2019)

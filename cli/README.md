@@ -12,12 +12,9 @@ Our implementation consists of the following parts:
 
 The implementation of 2 and 4 as well as the unique combination of the single parts are the contributions of this demonstration.
 
-<p>
+<br>
 
 For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/cli/demo_instructions.txt) or take a look at our [demo website](http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/).
-
-
-<br>
 
 ---
 
@@ -42,13 +39,7 @@ mvn package
 java -Xmx1024M -jar ./target/LinkedDataChainClient-jar-with-dependencies.jar
 ```
 
-<br>
-
 ---
-
-## Found a Bug?
-Yes! If you play around a little, you will find, that the implementation of the Smart Contract may not satisfy your needs.
-This code should not be deployed in a real business environment without review, rather, it can be used as a template to develop a robust and to your use case applicable Smart Contract.
 
 ## Sources
 

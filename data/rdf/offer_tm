@@ -1,0 +1,11 @@
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix trucker: <http://localhost:9999/rdf/> .
+@prefix market: <http://localhost:9999/rdf/> .
+@prefix shark: <http://localhost:9999/rdf/> .
+
+<> a as:Offer ;
+  as:actor trucker:profile-trucker ;
+  as:target market:profile-market ;
+  as:object shark:s ;
+  rdfs:seeAlso trucker:intermediatePedigreeByTrucker .

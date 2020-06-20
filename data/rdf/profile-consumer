@@ -1,0 +1,23 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <#> .
+@prefix ethon:  <http://ethon.consensys.net/> .
+@prefix ldchain: <http://people.aifb.kit.edu/co1683/2019/ld-chain/vocab#> .
+
+<> a foaf:Person , ethon:ExternalActor ;
+  foaf:name "Bernd";
+  rdfs:label "Bernd";
+  wdt:P106 "Customer" ;
+  ldp:inbox <http://localhost:14009/ldbbc/> ;
+  ldp:outbox <http://localhost:14009/ldbbc/> ;
+  ldp:docbox <http://localhost:14009/ldbbc/> ;
+  ldchain:hasHasherServer <http://localhost:14004> ;
+  ldchain:hasDefaultConnection <http://localhost:8543> ;
+  ethon:controlsAccount :consAccount .
+  
+:consAccount a ethon:ExternalAccount;
+  ethon:address "4caac15568ea56cd9f53e91690957ffe9252f8f0"^^xsd:hexBinary .
