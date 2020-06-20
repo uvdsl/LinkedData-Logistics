@@ -17,15 +17,15 @@ Preliminaries:
 
 
 Starting in the directory of the project:
-An example blockchain has already been initialised, using the genesis file in folder ./LinkedDataChainClient/ethereum. If anything unexpected happens to the state of the blockchain, simply delete your local copy and download this folder again. Everything will be set back to the inital state.
-Furthermore, an example instance of a LDHashNotary Smart Contract has been deployed. (see: http://www.student.kit.edu/~uvdsl/data/semantic/blockchainInfo.ttl)
+An example blockchain has already been initialised, using the genesis file in folder ./ethereum. If anything unexpected happens to the state of the blockchain, simply delete your local copy and download this folder again. Everything will be set back to the inital state.
+Furthermore, an example instance of a HashStore Smart Contract has been deployed. (see: http://www.student.kit.edu/~uvdsl/data/semantic/blockchainInfo.ttl)
 
 
 
 ## GETH
 
 Start ethereum node:
-	$ geth --port 3000 --networkid 7331 --nodiscover --datadir=./LinkedDataChainClient/ethereum --rpc --rpcport 8543 --rpcapi "admin,eth,net,web3,personal,miner" --ipcdisable --rpccorsdomain "*""eth,net,web3,personal,miner"
+	$ geth --port 3000 --networkid 7331 --nodiscover --datadir=./ethereum --rpc --rpcport 8543 --rpcapi "admin,eth,net,web3,personal,miner" --ipcdisable --rpccorsdomain "*"
 
 Access node in new console window and open a web3 shell via:
 	$ geth attach http://localhost:8543
@@ -47,7 +47,8 @@ Remember:
 	
 	$ cd ./LinkedDataChainClient
 	$ mvn package
-	$ java -Xmx1024M -jar ./target/LinkedDataChainClient-jar-with-dependencies.jar
+	$ cd ..
+	$ java -Xmx1024M -jar ./LinkedDataChainClient/target/LinkedDataChainClient-jar-with-dependencies.jar
 
 The main menu will ask you to tell it what you want. To see all commands enter:
 	# help
