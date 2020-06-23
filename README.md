@@ -4,8 +4,8 @@ As ensuring integrity of Linked Data is inherently difficult, we propose a schem
 For a quick overview, see the information provided below or read our research paper [[1](https://github.com/uvdsl/LinkedData-Logistics#sources)], availbale [here](https://link.springer.com/chapter/10.1007%2F978-3-030-33220-4_28)!
 
 
-For a short showcase, take a look at our demo websites for the CLI [(SEMANTiCS 2019 Demo)](http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/) and the Webagent [(BPM 2020)](http://people.aifb.kit.edu/co1683/2020/bpm-demo/), the successor of the CLI.
-You can also read the corresponding Posters&Demo papers of the CLI [[2](https://github.com/uvdsl/LinkedData-Logistics#sources)] and the Webagent [[3](https://github.com/uvdsl/LinkedData-Logistics#sources)].
+For a short showcase, take a look at our demo websites for the Webagent [(BPM 2020)](http://people.aifb.kit.edu/co1683/2020/bpm-demo/), or its predecessor, the CLI [(SEMANTiCS 2019 Demo)](http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/).
+You can also read the corresponding Posters&Demo papers of the Webagent [[3](https://github.com/uvdsl/LinkedData-Logistics#sources)] and the CLI [[2](https://github.com/uvdsl/LinkedData-Logistics#sources)].
 
 
 Regarding the data environment for the demos, you find all the RDF and blockchain in [data](https://github.com/uvdsl/LinkedData-Logistics/tree/master/data).
@@ -27,13 +27,12 @@ Linked Data is a light-weight standard-based way to publish data in a decentrali
 Hence, we ask: Can we combine the verification capabilities of the distributed ledger with Linked Data management?
 
 **Solution.** 
-Take a look at the README files of the CLI and the webagent to find out!
+Take a look at the [README of the webagent](https://github.com/uvdsl/LinkedData-Logistics/tree/master/webagent) to find out how to set it up!
 
 
 
 ## Found a Bug?
-Yes! If you play around a little, you will find, that the implementation of the Smart Contract may not satisfy your needs.
-This code should not be deployed in a real business environment without review, rather, it can be used as a template to develop a robust and to your use case applicable Smart Contract.
+Yes! This is a proof of concept, so we would be curious on how to develop it further!
 
 ---
 
@@ -43,4 +42,4 @@ This code should not be deployed in a real business environment without review, 
 
 [2] Braun, CHJ, and Käfer, T: Verifying the Integrity of Information along a Supply Chain using Linked Data and Smart Contracts. In: Proceedings of Posters and Demos at the 15th International Conference on Semantic Systems (SEMANTiCS) (2019)
 
-[3] Preprint available [here](tbd).
+[3] Braun, CHJ, and Käfer, T: A Web Agent to Participate in a Scalable Semantic Supply Chain Network on the Blockchain. [Preprint](http://people.aifb.kit.edu/co1683/2020/bpm-demo/paper_bpm20demo_LD_blockchain.pdf).
