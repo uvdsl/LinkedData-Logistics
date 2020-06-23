@@ -36,7 +36,7 @@ Yes! This is a proof of concept, so we would be curious on how to develop it fur
 
 ---
 
-## Sources
+## References
 
 [1] Braun, CHJ, and Käfer, T: Verifying the Integrity of Hyperlinked Information Using Linked Data and Smart Contracts. In: Proceedings of the 15th International Conference on Semantic Systems (SEMANTiCS) (2019)
 
