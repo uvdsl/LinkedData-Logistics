@@ -1,21 +1,21 @@
 # Webagent - Linked Data Chain Agent (Version 1)
-In this demo, we present our webagent. The corresponding Posters&Demo paper is available [here](tbd).
-Our implementation builds on the CLI [[1](https://github.com/uvdsl/LinkedData-Logistics/webagent#sources)]. It thus consists of the following parts:
+In this demo, we present our webagent.
+It thus consists of the following parts:
 
 1. We use Linked Data, i.e. RDF accessible using HTTP to store data off-chain in a decentralised fashion. <br>
    We build a trail of ownership of an item, its so-called ''Linked Pedigree'', in the form of RDF graphs. <br>
-   The RDF graphs are described using terms from the OntoPedigree ontology [[3](https://github.com/uvdsl/LinkedData-Logistics/webagent#sources)].
+   The RDF graphs are described using terms from the OntoPedigree ontology [[1](https://github.com/uvdsl/LinkedData-Logistics/webagent#references)].
 2. We implement a link-traversal based querying approach for verifying data on a Linked Pedigree off-chain.
-3. We hash the RDF graph using the approach of [[2](https://github.com/uvdsl/LinkedData-Logistics/webagent#sources)] to connect the off-chained data with the distributed ledger.
+3. We hash the RDF graph using the approach of [[2](https://github.com/uvdsl/LinkedData-Logistics/webagent#references)] to connect the off-chained data with the distributed ledger.
 4. We implement a Smart Contract to store RDF graph hashes in a Distributed Ledger based on Ethereum. <br>
    The stored hashes are then used to verify their corresponding Linked Data.
 
-5. We base the agent's architecture on the practices around the decentralised social network [SoLiD](https://solid.mit.edu), which is based on RESTful communication, data modellingin RDF, and Linked Data Notifications as ontology and protocol to describeand interact with notifications. 
+5. We base the agent's architecture on the practices around the decentralised social network [SoLiD](https://solid.mit.edu), which is based on RESTful communication, data modelling in RDF, and Linked Data Notifications as ontology and protocol to describeand interact with notifications.
 6. We tie the social network to the interlinked history of a product using the standardised [Activity Streams vocabulary](https://www.w3.org/TR/activitystreams-vocabulary/).
-   The agent is centred around the URI that identifiesa supply chain network participant. 
+   The agent is centred around the URI that identifies a supply chain network participant. For the ontology around the user profile, see [[3](https://github.com/uvdsl/LinkedData-Logistics/webagent#references)].
    
 The agent thus allows for participation in the supply chain network, manages the notifications, and verifies the data usingthe blockchain.
-The implementaion of 1-4 are basically a rewrite of the Java code in Javascript to put a new shiny UI on top of it.
+The implementation of 1-4 is a rewrite in Javascript of our previous CLI tool, where JavaScript allows us for more platform compatibility and to easily write a modern GUI.
 The implementation of 5 and 6 as well as the unique combination of the single parts are the contributions of this demonstration.
 
 For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/webagent/demo_instructions.txt) or take a look at our [demo website](http://people.aifb.kit.edu/co1683/2020/bpm-demo/).
