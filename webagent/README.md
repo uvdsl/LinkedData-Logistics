@@ -4,7 +4,7 @@ It thus consists of the following parts:
 
 1. We use Linked Data, i.e. RDF accessible using HTTP to store data off-chain in a decentralised fashion. <br>
    We build a trail of ownership of an item, its so-called ''Linked Pedigree'', in the form of RDF graphs. <br>
-   The RDF graphs are described using terms from the OntoPedigree ontology [[1](https://github.com/uvdsl/LinkedData-Logistics/webagent#references)].
+   The RDF graphs about the trail of ownership are described using terms from the OntoPedigree ontology and embedded in a RDF description of the blockchain [[1](https://github.com/uvdsl/LinkedData-Logistics/webagent#references)].
 2. We implement a link-traversal based querying approach for verifying data on a Linked Pedigree off-chain.
 3. We hash the RDF graph using the approach of [[2](https://github.com/uvdsl/LinkedData-Logistics/webagent#references)] to connect the off-chained data with the distributed ledger.
 4. We implement a Smart Contract to store RDF graph hashes in a Distributed Ledger based on Ethereum. <br>
