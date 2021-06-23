@@ -18,7 +18,7 @@ The agent thus allows for participation in the supply chain network, manages the
 The implementation of 1-4 is a rewrite in Javascript of our previous CLI tool, where JavaScript allows us for more platform compatibility and to easily write a modern GUI.
 The implementation of 5 and 6 as well as the unique combination of the single parts are the contributions of this demonstration.
 
-For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/webagent/demo_instructions.txt) or take a look at our [demo website](http://people.aifb.kit.edu/co1683/2020/bpm-demo/).
+For a short showcase, you can follow the instructions provided in [demo_instructions.txt](https://github.com/uvdsl/LinkedData-Logistics/blob/master/webagent/demo_instructions.txt) or take a look at our [demo website](http://people.aifb.kit.edu/co1683/2020/iswc-demo-chain/).
 
 ---
 
