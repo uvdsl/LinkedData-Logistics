@@ -4,7 +4,7 @@ As ensuring integrity of Linked Data is inherently difficult, we propose a schem
 For a quick overview, see the information provided below or read our research paper [[1](https://github.com/uvdsl/LinkedData-Logistics#references)]!
 
 
-For a short showcase, take a look at our [website for a demo submission about the Webagent](http://people.aifb.kit.edu/co1683/2020/bpm-demo/), or the website of its predecessor, the [CLI (published as demo at SEMANTiCS 2019)](http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/).
+For a short showcase, take a look at our [website for a demo submission about the Webagent](http://people.aifb.kit.edu/co1683/2020/iswc-demo-chain/), or the website of its predecessor, the [CLI (published as demo at SEMANTiCS 2019)](http://people.aifb.kit.edu/co1683/2019/ld-chain/semantics-demo/).
 You can also read the corresponding Posters&Demo papers about the Webagent [[3](https://github.com/uvdsl/LinkedData-Logistics#references)] and the CLI [[2](https://github.com/uvdsl/LinkedData-Logistics#references)].
 
 
